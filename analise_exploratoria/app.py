@@ -8,7 +8,6 @@ df = pd.read_csv('../all_bike_counts.csv', parse_dates=['detected'], dtype='int3
 df = df.set_index('detected')
 df_loc = pd.read_csv('../all_counter_locations.csv')
 
-# --- Título da App ---
 st.title("Análise de Contagem de Bicicletas")
 
 # --- Colocar controles na barra lateral ---
@@ -24,13 +23,12 @@ with st.sidebar:
     start_date = st.date_input("Data de início", df.index.min().date())
     end_date = st.date_input("Data de fim", df.index.max().date())
 
-# Filtrar o DataFrame com base no intervalo de datas escolhido
+# Filtrar com base no intervalo de datas escolhido
 df_filtered = df[(df.index >= pd.to_datetime(start_date)) & (df.index <= pd.to_datetime(end_date))]
 
-# --- Resample para Dados Diários ---
 df_filtered_daily = df_filtered.resample('D').sum()
 
-# --- Mostrar gráfico de Linha para o contador selecionado ---
+# Cronograma
 if st.sidebar.checkbox("Mostrar gráfico de linha do contador selecionado"):
     fig_line = go.Figure()
 
@@ -45,7 +43,6 @@ if st.sidebar.checkbox("Mostrar gráfico de linha do contador selecionado"):
         name=f'Contador {locationId_select}'
     ))
 
-    # Adiciona título e rótulos aos eixos
     fig_line.update_layout(
         title=f'Contador {locationId_select}',
         xaxis_title='Data',
@@ -53,7 +50,6 @@ if st.sidebar.checkbox("Mostrar gráfico de linha do contador selecionado"):
         template='plotly_dark'
     )
 
-    # Exibe o gráfico interativo
     st.plotly_chart(fig_line, use_container_width=True)
 
 # --- Processar colunas temporais ---
@@ -137,6 +133,7 @@ if st.sidebar.checkbox("Mostrar Boxplot por Estação do Ano"):
     )
     
     st.plotly_chart(fig_season, use_container_width=True)
+    
 
 
 
