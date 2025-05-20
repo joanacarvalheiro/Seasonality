@@ -7,6 +7,7 @@ import plotly.io as pio
 df = pd.read_csv('../all_bike_counts.csv', parse_dates=['detected'], dtype='int32')
 df = df.set_index('detected')
 df_loc = pd.read_csv('../all_counter_locations.csv')
+df_daily_filled = pd.read_csv('../df_daily_filled.csv',parse_dates=['detected'],dtype='int32')
 
 st.title("Análise de Contagem de Bicicletas")
 
@@ -28,8 +29,8 @@ df_filtered = df[(df.index >= pd.to_datetime(start_date)) & (df.index <= pd.to_d
 
 df_filtered_daily = df_filtered.resample('D').sum()
 
-# Cronograma
-if st.sidebar.checkbox("Mostrar gráfico de linha do contador selecionado"):
+# Cronograma com valores originais  
+if st.sidebar.checkbox("Cronograma com valores originais"):
     fig_line = go.Figure()
 
     # Filtra os dados para o contador selecionado
@@ -39,6 +40,30 @@ if st.sidebar.checkbox("Mostrar gráfico de linha do contador selecionado"):
     fig_line.add_trace(go.Scatter(
         x=df_line_resampled.index,
         y=df_line_resampled[count_col],
+        mode='lines',
+        name=f'Contador {locationId_select}'
+    ))
+
+    fig_line.update_layout(
+        title=f'Contador {locationId_select}',
+        xaxis_title='Data',
+        yaxis_title='Contagem',
+        template='plotly_dark'
+    )
+
+    st.plotly_chart(fig_line, use_container_width=True)
+
+# Cronograma com zéros corrigidos 
+if st.sidebar.checkbox("Cronograma com zéros corrigidos"):
+    fig_line = go.Figure()
+
+    # Filtra os dados para o contador selecionado
+    df_daily = df_daily_filled [[count_col]].dropna()
+
+    # Adiciona a linha do contador selecionado
+    fig_line.add_trace(go.Scatter(
+        x=df_daily.index,
+        y=df_daily[count_col],
         mode='lines',
         name=f'Contador {locationId_select}'
     ))
