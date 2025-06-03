@@ -54,7 +54,7 @@ if st.sidebar.checkbox("Cronograma com valores originais"):
     st.plotly_chart(fig_line, use_container_width=True)
 
 # Cronograma com zéros corrigidos 
-if st.sidebar.checkbox("Cronograma com zéros corrigidos"):
+if st.sidebar.checkbox("Cronograma com zeros corrigidos"):
     fig_line = go.Figure()
 
     # Filtra os dados para o contador selecionado
